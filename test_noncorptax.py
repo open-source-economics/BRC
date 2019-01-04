@@ -4,6 +4,8 @@ import pandas as pd
 track_progress = False
 
 OVERWRITE = False
+
+# Noncorporate tax results to check
 vars_to_check = ['SchC_pos', 'SchC_neg', 'e26270_pos', 'e26270_neg']
 
 # No II tax changes or behavioral responses
@@ -11,7 +13,7 @@ iit_params_ref = {}
 elast_dict = {}
 
 """
-Test NC0: No reform
+Test C0: No reform
 """
 btax_dict1 = {}
 btax_dict2 = {}
@@ -86,17 +88,17 @@ else:
 
 # Display test results
 if testpass0:
-    print('Test corptax 0: PASS')
+    print('Test noncorptax 0: PASS')
 else:
-    print('Test corptax 0: FAIL')
+    print('Test noncorptax 0: FAIL')
 if testpass1:
-    print('Test corptax 1: PASS')
+    print('Test noncorptax 1: PASS')
 else:
-    print('Test corptax 1: FAIL')
+    print('Test noncorptax 1: FAIL')
 if testpass2:
-    print('Test corptax 2: PASS')
+    print('Test noncorptax 2: PASS')
 else:
-    print('Test corptax 2: FAIL')
+    print('Test noncorptax 2: FAIL')
 
 
 
