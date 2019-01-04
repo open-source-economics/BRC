@@ -1,2 +1,3 @@
 .ipynb*
 puf.csv
+__pycache__
