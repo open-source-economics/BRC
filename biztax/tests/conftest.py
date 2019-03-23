@@ -57,7 +57,7 @@ def reforms():
             'depr_15yr_bonus': 0.6,
             'depr_20yr_method': 'ADS',
             'depr_20yr_bonus': 0.4,
-            'depr_25yr_method': 'EconomicDS',
+            'depr_25yr_method': 'GDS',
             'depr_25yr_bonus': 0.2,
             'depr_275yr_method': 'GDS',
             'depr_275yr_bonus': 0.2,
