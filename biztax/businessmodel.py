@@ -41,7 +41,7 @@ class BusinessModel():
     """
 
     def __init__(self, btax_policy_ref, itax_policy_ref,
-                 # current-law policy are the defaults for baseline
+                 # baseline defaults are current-law policy
                  btax_policy_base=Policy(), itax_policy_base=itax.Policy(),
                  investor_data='puf.csv'):
         # Check policy argument types
@@ -52,8 +52,8 @@ class BusinessModel():
         # Create Investor objects incorporating itax policy and investor data
         # self.investor_base = Investor(itax_policy_base, investor_data)
         # self.investor_ref = Investor(itax_policy_ref, investor_data)
-        self.investor_base = Investor(dict(), investor_data)  # TEMP CODE
-        self.investor_ref = Investor(dict(), investor_data)  # TEMP CODE
+        self.investor_base = Investor(itax_policy_base, investor_data)
+        self.investor_ref = Investor(itax_policy_ref, investor_data)
         # Create btax policy parameters DataFrame objects
         self.btax_params_base = btax_policy_base.parameters_dataframe()
         self.btax_params_ref = btax_policy_ref.parameters_dataframe()
