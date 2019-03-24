@@ -55,8 +55,8 @@ class BusinessModel():
         self.investor_base = Investor(dict(), investor_data)  # TEMP CODE
         self.investor_ref = Investor(dict(), investor_data)  # TEMP CODE
         # Create btax policy parameters DataFrame objects
-        self.btax_params_base = Policy.parameters_dataframe(btax_policy_base)
-        self.btax_params_ref = Policy.parameters_dataframe(btax_policy_ref)
+        self.btax_params_base = btax_policy_base.parameters_dataframe()
+        self.btax_params_ref = btax_policy_ref.parameters_dataframe()
         # Create Corporations
         self.corp_base = Corporation(self.btax_params_base)
         self.corp_ref = Corporation(self.btax_params_ref)
