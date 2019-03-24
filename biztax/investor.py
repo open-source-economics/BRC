@@ -11,21 +11,21 @@ from biztax.data import Data
 class Investor():
     """
     Constructor for the Investor class.
-    
-    This class provides information on effective marginal tax rates on 
+
+    This class provides information on effective marginal tax rates on
     investment income and distributes changes in corporate after-tax income
     and pass-through business net income.
-    
+
     Parameters:
         itax_policy: individual-tax Policy object
         data: investor data for itax.Records class
     """
-    
+
     def __init__(self, itax_policy, data='puf.csv'):
         # Check argument types
         if not isinstance(itax_policy, itax.Policy):
             raise ValueError('itax_policy must be an itax.Policy object')
-        if not (isinstance(data, str) or isinstance(data, pd.DataFrame)):
+        if not isinstance(data, (str, pd.DataFrame)):
             raise ValueError('data must be a string or a Pandas DataFrame')
         # Save policy and records needed to create itax.Calculator object
         self.itax_policy = itax_policy
@@ -33,6 +33,11 @@ class Investor():
         # Specify MTRs needed for calculating tax rates on business equity
         self.needed_mtr_list = ['e00900p', 'e26270', 'e02000', 'e01700',
                                 'e00650', 'p22250', 'p23250']
+        # Declare results calculated by Investor class
+        self.mtrlist_nc = None
+        self.mtrlist_e = None
+        self.revenue_predistribution = None
+        self.revenue_postdistribution = None
 
     def initiate_itax_calculator(self):
         """
@@ -44,8 +49,9 @@ class Investor():
         calc.advance_to_year(2014)
         calc.calc_all()
         return calc
-    
-    def calc_tauNC(self, mtrdict, incdict):
+
+    @staticmethod
+    def calc_tauNC(mtrdict, incdict):
         """
         Calculate effective marginal tax rate on noncorporate business income.
         """
@@ -67,9 +73,9 @@ class Investor():
         mtr_td = sum(mtr4 * inc4 * posti * wgt) / sum(inc4 * posti * wgt)
         mtr_nc = alpha_nc_ft * mtr_ft + alpha_nc_td * mtr_td
         return mtr_nc
-    
-    
-    def calc_tauE(self, mtrdict, incdict, year):
+
+    @staticmethod
+    def calc_tauE(mtrdict, incdict, year):
         """
         Calculate the effective marginal tax rate on equity income in year.
         """
@@ -121,12 +127,13 @@ class Investor():
         tau_td = 1 - (np.log(np.exp(E * h_td) * (1 - tau_td1) + tau_td1) /
                       (E * h_td))
         tau_e = alpha_ft * tau_ft + alpha_td * tau_td + alpha_nt * 0.0
-        return(tau_e)
-    
-    
+        return tau_e
+
     def gen_mtr_lists(self):
-        # Calculate the EMTR on income from corporate equity
-        # and non-corporate business.
+        """
+        Calculate the EMTR on income from corporate equity
+        and non-corporate business.
+        """
         mtrlist_nc = np.zeros(14)
         mtrlist_e = np.zeros(14)
         icalc = self.initiate_itax_calculator()
@@ -153,19 +160,19 @@ class Investor():
             mtrlist_e[year-2014] = self.calc_tauE(mtr1, inc1, year)
         self.mtrlist_nc = mtrlist_nc
         self.mtrlist_e = mtrlist_e
-    
+
     def get_tauNClist(self):
         """
         Returns mtrlist_nc as an array
         """
         return np.array(self.mtrlist_nc)
-    
+
     def get_tauElist(self):
         """
         Returns mtrlist_e as an array
         """
         return np.array(self.mtrlist_e)
-    
+
     def distribute_results(self, multipliers):
         """
         Pass effects of business tax reform to taxcalc.
@@ -219,11 +226,11 @@ class Investor():
                 icalc.increment_year()
                 icalc.calc_all()
         self.revenue_postdistribution = indiv_revenue
-    
+
     def undistributed_revenue(self):
         """
-        Calculates individual income tax revenue for each year without 
-        distributing any tax changes. 
+        Calculates individual income tax revenue for each year without
+        distributing any tax changes.
         """
         icalc = self.initiate_itax_calculator()
         indiv_revenue = np.zeros(14)
@@ -233,19 +240,17 @@ class Investor():
                 icalc.increment_year()
                 icalc.calc_all()
         self.revenue_predistribution = indiv_revenue
-    
+
     def get_revenue_withdistribution(self):
         """
-        Returns total individual income tax revenue after corporate tax 
+        Returns total individual income tax revenue after corporate tax
         distribution and noncorporate business income distribution.
         """
         return np.array(self.revenue_postdistribution)
-    
+
     def get_revenue_nodistribution(self):
         """
         Returns total individual income tax revenue with no business income
         distribution.
         """
         return np.array(self.revenue_predistribution)
-    
-    
