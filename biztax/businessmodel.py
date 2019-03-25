@@ -50,8 +50,6 @@ class BusinessModel():
         assert isinstance(btax_policy_base, Policy)
         assert isinstance(itax_policy_base, itax.Policy)
         # Create Investor objects incorporating itax policy and investor data
-        # self.investor_base = Investor(itax_policy_base, investor_data)
-        # self.investor_ref = Investor(itax_policy_ref, investor_data)
         self.investor_base = Investor(itax_policy_base, investor_data)
         self.investor_ref = Investor(itax_policy_ref, investor_data)
         # Create btax policy parameters DataFrame objects
